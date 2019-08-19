@@ -135,8 +135,7 @@ int mqtt_sn_create_socket(const char* host, const char* port)
         addr.sin_addr.s_addr = htonl(INADDR_ANY);
         addr.sin_port = htons(atoi(port));
         if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
-            mqtt_sn_log_debug("Failed to bind socket: %s", strerror(errno));
-            continue;
+            mqtt_sn_log_debug("Failed to bind socket: %s. Trying to ignore the error.", strerror(errno));
         }
 
         // Connect socket to the remote host
