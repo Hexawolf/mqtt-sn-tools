@@ -128,6 +128,17 @@ int mqtt_sn_create_socket(const char* host, const char* port)
             continue;
         }
 
+        // Bind socket to the correct port
+        struct sockaddr_in addr;
+        memset(&addr, 0, sizeof(addr));
+        addr.sin_family = rp->ai_family;
+        addr.sin_addr.s_addr = htonl(INADDR_ANY);
+        addr.sin_port = htons(atoi(port));
+        if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+            mqtt_sn_log_debug("Failed to bind socket: %s", strerror(errno));
+            continue;
+        }
+
         // Connect socket to the remote host
         if (connect(fd, rp->ai_addr, rp->ai_addrlen) == 0) {
             // Success
